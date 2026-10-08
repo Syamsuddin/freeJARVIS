@@ -1,0 +1,127 @@
+{
+  "app": {
+    "name": "freeJARVIS",
+    "description": "Aplikasi percakapan suara full-duplex di macOS yang mengendalikan Claude Code lewat Claude Agent SDK; satu pengguna, pemakaian pribadi.",
+    "type": "greenfield"
+  },
+  "confirmed_at": "2026-10-08T15:00:00+08:00",
+  "source": "docs/_design/dosir-desain.md (dosir 8 Okt 2026) + docs/_design/*.png; dosir = arsip masukan, blueprint docs/ adalah sumber kebenaran",
+  "requirements": {
+    "goal": "Mengendalikan Claude Code sepenuhnya lewat percakapan suara Bahasa Indonesia tanpa membuka terminal, dengan sela/koreksi/batal kapan saja.",
+    "success_metric": "Gerbang tahap 1 lolos terukur: barge-in p95 < 300 ms; akhir ucapan -> suara pertama Jarvis p50 < 2,5 s; 5 skenario acuan lolos tanpa menyentuh terminal.",
+    "features": [
+      { "name": "Push-to-talk hotkey global", "priority": "mvp" },
+      { "name": "STT di VPS (faster-whisper) + fallback whisper.cpp lokal", "priority": "mvp" },
+      { "name": "Jawaban suara (AVSpeechSynthesizer id-ID)", "priority": "mvp" },
+      { "name": "Pemisah lisan/layar (---layar---, narator, penjaga panjang)", "priority": "mvp" },
+      { "name": "Interupsi (barge-in), koreksi, pembatalan", "priority": "mvp" },
+      { "name": "Pilih proyek + resume sesi", "priority": "mvp" },
+      { "name": "Persetujuan berjenjang 4 tingkat lewat suara", "priority": "mvp" },
+      { "name": "Viewer 4 tab (Jawaban, Perubahan, Log, Pertanyaan)", "priority": "mvp" },
+      { "name": "Panel jatah Max + peringatan 10%", "priority": "mvp" },
+      { "name": "Kolom ketik campuran suara/teks", "priority": "mvp" },
+      { "name": "Kebijakan model per jenis giliran", "priority": "mvp" },
+      { "name": "MCP Streamable HTTP :8765 + hook CLI", "priority": "later" },
+      { "name": "Channels (eksperimen)", "priority": "later" },
+      { "name": "Kata panggil openWakeWord 'Jarvis'", "priority": "later" },
+      { "name": "TTS cloud (Azure/ElevenLabs)", "priority": "later" }
+    ],
+    "out_of_scope": [
+      "Multi-proyek paralel",
+      "Agen selain Claude Code (Hermes, OpenClaw, Codex)",
+      "Aplikasi mobile atau web",
+      "Multi-pengguna / berbagi token OAuth",
+      "Menyimpan audio mentah",
+      "API yang butuh macOS 26 (SpeechAnalyzer)"
+    ],
+    "roles": [
+      { "name": "pengguna", "can": ["semua perintah suara/teks", "menyetujui keempat tingkat"], "cannot": ["menyetujui dengan 'ya' untuk tingkat frasa aksi/kode layar"] },
+      { "name": "claude_code", "can": ["alat tingkat otomatis tanpa tanya", "meminta izin via can_use_tool", "bertanya via AskUserQuestion"], "cannot": ["menjalankan alat tingkat >= kata singkat tanpa persetujuan"] },
+      { "name": "jarvisd", "can": ["menjawab status dari peristiwa SDK", "interrupt()", "git status --short pasca-batal"], "cannot": ["mengarang kemajuan", "meneruskan pertanyaan status ke model"] }
+    ],
+    "processes": [
+      { "name": "Giliran instruksi kerja", "happy_path": "PTT -> STT -> turn detection -> query SDK -> narator + Viewer -> ResultMessage -> jawaban lisan <= 2 kalimat", "failure": "VPS putus -> fallback lokal; jatah habis -> job gagal beralasan" },
+      { "name": "Selaan/koreksi/batal", "happy_path": "VAD lokal -> tts.stop < 300 ms -> tafsir maksud -> jeda/ringkas/koreksi/batal", "failure": "stream tak berhenti -> status tetap 'membatalkan' sampai berhenti" },
+      { "name": "Persetujuan", "happy_path": "can_use_tool -> klasifikasi tingkat -> ucapan sesuai tingkat -> allow", "failure": "timeout -> deny" }
+    ],
+    "entities": [
+      { "name": "Project", "key_attrs": ["path", "name", "last_session_id"], "relations": ["hasMany Session"] },
+      { "name": "Session", "key_attrs": ["sdk_session_id", "model"], "relations": ["belongsTo Project", "hasMany Turn", "hasMany Job"] },
+      { "name": "Turn", "key_attrs": ["speaker", "text", "idempotency_key"], "relations": ["belongsTo Session"] },
+      { "name": "Job", "key_attrs": ["state", "fail_reason"], "relations": ["belongsTo Session", "hasMany ToolEvent", "hasMany PendingPrompt"] },
+      { "name": "ToolEvent", "key_attrs": ["tool", "summary"], "relations": ["belongsTo Job"] },
+      { "name": "PendingPrompt", "key_attrs": ["kind", "tier", "expected_phrase", "expires_at"], "relations": ["belongsTo Job"] },
+      { "name": "QuotaSnapshot", "key_attrs": ["window_remaining_pct", "credit_remaining_pct"], "relations": [] },
+      { "name": "Setting", "key_attrs": ["key", "value"], "relations": [] }
+    ],
+    "sensitive_data": ["token OAuth Claude (dikelola Claude Code, tak pernah disalin)", "token VPS STT (Keychain)", "transkrip (retensi 30 hari)", "audio (tak pernah disimpan)", "ANTHROPIC_API_KEY (dibuang dari env)"],
+    "stack": {
+      "backend": "jarvisd: Python 3.12 + claude-agent-sdk",
+      "frontend": "FreeJarvis.app: Swift 5.9 + SwiftUI (macOS 13+)",
+      "db": "SQLite (aiosqlite)",
+      "versions": { "macos": "13+", "swift": "5.9", "xcode": "15", "python": "3.12" },
+      "forbidden": ["Flutter/Electron/web UI", "MLX/CoreML/Neural Engine", "ANTHROPIC_API_KEY di env jarvisd", "API macOS 26", "jarvisd mendengar selain 127.0.0.1"],
+      "framework": { "backend": "claude-agent-sdk + asyncio", "frontend": "SwiftUI" }
+    },
+    "ui": { "enabled": true, "anchor": "Prototipe 3 keadaan + lembar logo (docs/_design/*.png), artifact Pg7DDVzj4uxepauPinCuoe" },
+    "split": { "enabled": false, "role": "", "contract_path": "docs/27_API_CONTRACT.md", "contract_version": "0.1.0", "note": "Tanpa split (keputusan 8 Okt 2026). 27 ditulis manual sebagai rumah tunggal protokol WS app<->jarvisd dan HTTP jarvisd<->stt-server; validator cek 10 [WARN] disengaja." },
+    "architecture": {
+      "pattern": "Dua proses lokal (app Swift = audio+UI; jarvisd Python = seluruh logika) + stt-server di VPS; Claude Code via Agent SDK",
+      "integrations": ["Claude Agent SDK (login Max)", "VPS STT milik sendiri (TLS + Bearer)", "hook SDK"]
+    },
+    "environment": {
+      "os": "macOS 13+ Intel (laptop); Ubuntu 22.04+ (VPS)",
+      "services": ["SQLite lokal", "stt-server di VPS", "launchd LaunchAgent"],
+      "commands": { "test_py": "uv run pytest", "test_app": "xcodebuild test", "lint": "uv run ruff check . && uv run mypy jarvisd" }
+    },
+    "testing": "pytest + pytest-asyncio (jarvisd, stt-server), XCTest (app), uji pengukuran latensi berskrip",
+    "security": ["127.0.0.1 saja", "TLS + Bearer ke VPS", "audio tak disimpan", "retensi transkrip 30 hari", "pop ANTHROPIC_API_KEY", "mute di tingkat AVAudioEngine"],
+    "acceptance": "Given/When/Then per fitur MVP + skenario lintas tahap + pengukuran latensi",
+    "definition_of_done": "Kriteria 23 + tes hijau + lint bersih + tanpa regresi + pengukuran bila fitur bersinggungan latensi",
+    "change_policy": {
+      "git": "Branch per fitur; selalu di-merge ke main; tanpa branch jangka panjang lain; tanpa commit langsung ke main",
+      "irreversible_ops": ["migrasi skema SQLite destruktif", "hapus transkrip/DB", "deploy stt-server", "perubahan protokol 27 (breaking)", "perubahan klasifikasi tingkat persetujuan"],
+      "release_steps": ["tes hijau", "migrasi tervalidasi", "backup DB", "build app + pasang jarvisd", "smoke test suara", "rollback siap"]
+    }
+  },
+  "canonical_owners": {
+    "product_value": "00/01", "features": "01", "scope": "02", "roadmap": "03",
+    "domain_terms": "04", "roles": "05", "business_process": "06", "schema": "07",
+    "architecture": "08", "stack": "09", "dev_env": "10", "commands": "11",
+    "project_structure": "12", "testing": "13", "error_handling": "14",
+    "observability": "15", "landmines": "16", "repair_rules": "18", "guardrails": "20",
+    "security": "21", "change_policy": "22",
+    "definition_of_done": "24", "ui_conventions": "26", "ipc_contract": "27"
+  },
+  "referenced_by": {
+    "01": ["02","03","23"], "02": ["03","17","22","23","CLAUDE"], "03": ["23"],
+    "04": ["06","07","27"], "05": ["06","21","23"], "06": ["23"],
+    "07": ["06","16","18","21","23"], "08": ["27"], "09": ["08","10","CLAUDE"], "10": [],
+    "11": ["10","13","16","23","25","CLAUDE"], "12": ["CLAUDE","26"], "13": ["23","24"],
+    "14": ["16","26"], "15": ["16"], "16": ["18"], "18": ["17"], "20": ["24","CLAUDE"],
+    "21": ["06","20","22","23"], "22": ["25","CLAUDE"], "24": ["23","25"],
+    "26": ["23"], "27": ["06","08","13","23","CLAUDE"]
+  },
+  "collapsed": ["17", "19"],
+  "landmines": [
+    "ANTHROPIC_API_KEY di env membuat SDK menagih API key, bukan langganan Max",
+    "Pembatalan baru sah setelah stream SDK benar-benar berhenti, bukan saat interrupt() dipanggil",
+    "Transkrip sementara Whisper tidak boleh memicu perintah",
+    "Backchannel ('iya','oke') saat Jarvis bicara bukan persetujuan",
+    "Kipas Intel saat CPU sibuk bisa memicu VAD",
+    "Hook SDK dipasang lewat opsi SDK, bukan settings.json"
+  ],
+  "assumptions": [
+    "Metrik sukses tahap 1 (disetujui 8 Okt 2026)",
+    "Token warna panel #111A2B, garis #1E293B, hijau #34D399 disarikan dari prototipe",
+    "Tooling: uv, ruff, mypy, pytest, XCTest, systemd + Caddy di VPS",
+    "Token VPS di Keychain macOS",
+    "Rekonstruksi 4 tahap & dua mesin status (disetujui 8 Okt 2026)"
+  ],
+  "open_questions": [
+    "AskUserQuestion lewat can_use_tool pada versi SDK terpasang (verifikasi hari 1 tahap 0)",
+    "Kecepatan STT di VPS >= 1x realtime untuk large-v3-turbo",
+    "Kualitas suara sistem id-ID di laptop",
+    "Nama field batas laju di ResultMessage untuk panel jatah"
+  ]
+}

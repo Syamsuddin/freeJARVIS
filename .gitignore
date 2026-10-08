@@ -1,0 +1,10 @@
+.env
+*.db
+*.db-wal
+*.db-shm
+.venv/
+__pycache__/
+build/
+DerivedData/
+xcuserdata/
+.DS_Store

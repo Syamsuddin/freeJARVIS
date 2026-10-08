@@ -8,3 +8,4 @@ build/
 DerivedData/
 xcuserdata/
 .DS_Store
+stt-server/tests/fixtures/*.wav

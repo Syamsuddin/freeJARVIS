@@ -6,7 +6,7 @@ Pemilik aturan keamanan & privasi. Aktor & tingkat: docs/05. Skema: docs/07.
 |---|---|
 | app ↔ `jarvisd` | WebSocket hanya di `127.0.0.1:8764`. Handshake membawa token sesi lokal acak 32 byte yang ditulis `jarvisd` ke `~/Library/Application Support/FreeJarvis/ws.token` (mode 0600) dan dibaca app; tanpa token → koneksi ditutup (kode: docs/27) |
 | `jarvisd` → `stt-server` | HTTPS saja (TLS Caddy), header `Authorization: Bearer <token>`; token di Keychain (`freejarvis.stt`); verifikasi sertifikat wajib |
-| `stt-server` | Bandingkan token dengan `hmac.compare_digest`; tolak > `STT_MAX_AUDIO_S` atau > 2 MB (413); rate limit 60 permintaan/menit per token (429); uvicorn hanya di 127.0.0.1 di belakang Caddy |
+| `stt-server` | Bandingkan token dengan `hmac.compare_digest`; tolak tanpa Content-Length (411), > 1 MB (413; di bawah ambang spool Starlette 1 MiB agar audio tetap di memori) atau > `STT_MAX_AUDIO_S` (413); rate limit 60 permintaan/menit per token (429); uvicorn hanya di 127.0.0.1 di belakang Caddy |
 | Claude | OAuth langganan Max milik Pak Syams; tak pernah disalin ke mesin lain. Bila dibagikan, tiap pemakai login sendiri |
 
 ## Persetujuan (penegakan teknis)
@@ -22,7 +22,7 @@ Pemilik aturan keamanan & privasi. Aktor & tingkat: docs/05. Skema: docs/07.
 | Transkrip | SQLite lokal; retensi bawaan 30 hari (`settings.retention_days`); `store/retention.py` menghapus `turns` lebih tua saat startup dan tiap 24 jam |
 | Mikrofon | Indikator selalu terlihat di menu bar; tombol bisu menghentikan `AVAudioEngine` input (bukan hanya UI) |
 | Rahasia | Tak ada di repo, DB, log, atau `.env` app. `.env` & `*.db` ada di `.gitignore` |
-| `ANTHROPIC_API_KEY` | `env.pop("ANTHROPIC_API_KEY", None)` sebelum membuat klien SDK; `diag sdk` gagal bila masih terlihat |
+| `ANTHROPIC_API_KEY` | dibuang dari `os.environ` proses (`scrub_billing_env()`) sebelum membuat klien SDK — bukan dari `options.env` (docs/16); `diag sdk` gagal bila masih terlihat |
 
 ## Validasi input
 - Semua pesan WS divalidasi model pydantic (docs/27); pesan tak valid → `error` + log, tidak diproses.

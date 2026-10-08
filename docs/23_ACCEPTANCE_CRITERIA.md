@@ -4,7 +4,7 @@ Per fitur aktif (docs/01). Patokan selesai = kriteria di sini + DoD (docs/24). F
 ## G0 — Verifikasi tahap 0
 | Cek | Perintah | Lulus |
 |---|---|---|
-| `AskUserQuestion` lewat `can_use_tool` | `cd jarvisd && uv run python -m jarvisd.diag ask` | mencetak `ask_via_can_use_tool=yes` (bila `no` → `jarvis_ask` in-process, docs/03) |
+| `AskUserQuestion` lewat `can_use_tool` | `cd jarvisd && uv run python -m jarvisd.diag ask` | mencetak `ask_via_can_use_tool=yes` + `answer_roundtrip=yes` (bila `no` → `jarvis_ask` in-process, docs/03). **LULUS 8 Okt 2026** (SDK 0.2.164, haiku & sonnet); ulangi di laptop bila SDK naik versi |
 | Kecepatan STT | `cd stt-server && uv run python -m stt_server.bench --samples tests/fixtures/id-*.wav` | RTF ≤ 1,0 untuk `large-v3-turbo`, atau `medium` dipilih dan dicatat di docs/09 |
 | Suara id-ID | `say -v '?' \| grep id_ID` | ≥ 1 suara; pengguna menyatakan layak |
 | SDK tanpa API key | `cd jarvisd && uv run python -m jarvisd.diag sdk` | `auth=subscription`, `anthropic_api_key=absent` |

@@ -42,7 +42,7 @@ Kode `error.code`: `bad_message`, `unknown_type`, `stt_unavailable`, `sdk_failed
 ## HTTP `stt-server`
 | Metode & path | Request | Respons 200 | Galat |
 |---|---|---|---|
-| `POST /transcribe` | `multipart/form-data`: `audio` (WAV 16 kHz mono s16, ≤ 8 s), `prompt?` (initial prompt kosakata, ≤ 800 karakter), `language` (`id`); header `Authorization: Bearer`, `X-Request-Id` | `{"text": str, "duration_s": float, "infer_ms": int, "model": str}` | 400 format, 401 token, 413 terlalu besar/panjang, 429 rate limit, 503 model belum siap |
+| `POST /transcribe` | `multipart/form-data`: `audio` (WAV 16 kHz mono s16, ≤ 8 s), `prompt?` (initial prompt kosakata, ≤ 800 karakter), `language` (`id`); header `Authorization: Bearer`, `X-Request-Id` | `{"text": str, "duration_s": float, "infer_ms": int, "model": str}` | 400 format, 401 token, 411 tanpa Content-Length, 413 > 1 MB atau > `STT_MAX_AUDIO_S`, 429 rate limit, 503 model belum siap |
 | `GET /healthz` | — | `{"status": "ok", "model": str}` | 503 |
 Galat berbentuk `{"error": {"code": str, "message": str}}`.
 

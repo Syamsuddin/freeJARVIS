@@ -1,0 +1,43 @@
+[project]
+name = "jarvisd"
+version = "0.1.0"
+description = "Daemon logika freeJARVIS: percakapan suara untuk Claude Code lewat Agent SDK"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "claude-agent-sdk>=0.2.164",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jarvisd"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = ["live: memanggil Claude/VPS asli; tidak jalan di pytest -q bawaan"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "ASYNC", "S", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"

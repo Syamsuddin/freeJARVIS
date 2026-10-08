@@ -1,0 +1,23 @@
+[Unit]
+Description=freeJARVIS stt-server (faster-whisper)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=stt
+Group=stt
+WorkingDirectory=/opt/stt-server/current
+EnvironmentFile=/opt/stt-server/.env
+ExecStart=/opt/stt-server/current/.venv/bin/uvicorn stt_server.main:app --host 127.0.0.1 --port 8080 --workers 1
+Restart=on-failure
+RestartSec=3
+# Audio tidak pernah ke disk (docs/21): tanpa direktori tulis kecuali cache model.
+Environment=HF_HOME=/opt/stt-server/models
+ReadWritePaths=/opt/stt-server/models
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

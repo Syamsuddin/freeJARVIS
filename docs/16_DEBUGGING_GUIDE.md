@@ -14,11 +14,13 @@ Log: docs/15. Perintah: docs/11. Galat: docs/14.
 | Viewer tak menampilkan diff | hook `PostToolUse` terpasang di opsi SDK? log `event=hook` |
 
 ## Jebakan proyek
-- **`ANTHROPIC_API_KEY`** di env → SDK memakainya dan menagih API key. `engine/sdk_client.py` wajib `env.pop("ANTHROPIC_API_KEY", None)` untuk env subprocess; jangan "memperbaiki" galat login dengan menambahkan key.
+- **`ANTHROPIC_API_KEY`** di env → SDK memakainya dan menagih API key. SDK (0.2.164) menimpakan `ClaudeAgentOptions.env` DI ATAS `os.environ`, jadi membuang key dari `options.env` TIDAK berefek: key harus dibuang dari `os.environ` proses (`engine/sdk_client.py` `scrub_billing_env()`, dipanggil `build_options()`). Jangan "memperbaiki" galat login dengan menambahkan key.
+- **CLI yang dipakai SDK** adalah binari bawaan paket (`claude_agent_sdk/_bundled/claude`), bukan `claude` di PATH; versinya mengikuti versi SDK. Login tetap dibagi lewat `~/.claude`.
 - **`interrupt()` ≠ batal.** Stream bisa masih mengirim pesan; status `cancelled` hanya setelah stream berakhir.
 - **Transkrip sementara** Whisper tidak stabil; jangan pernah memicu aksi darinya.
 - **Backchannel** "iya"/"oke" saat Jarvis bicara terlihat seperti persetujuan. Bukan.
 - **Kipas MacBook Intel** saat CPU sibuk (Claude Code + build) bisa memicu VAD; uji dengan beban CPU.
 - **Hook SDK** dipasang lewat opsi `hooks` di `ClaudeAgentOptions`, bukan `.claude/settings.json`; mengubah settings proyek pengguna dilarang.
-- **`AskUserQuestion`** perilakunya di `can_use_tool` belum diverifikasi; jangan berasumsi sebelum G0 (docs/03).
+- **`AskUserQuestion`** lewat `can_use_tool` (terverifikasi G0, SDK 0.2.164). Jawaban dikembalikan dengan `PermissionResultAllow(updated_input={**input, "answers": {<teks pertanyaan>: <label>}})`; mengembalikan input tanpa `answers` = pertanyaan tak terjawab.
+- **Unggahan > 1 MiB** di Starlette di-spool ke berkas temp; `stt-server` menolak body > 1 MB (Content-Length) agar audio tak pernah menyentuh disk.
 - **Voice Processing I/O** mengubah format/sample rate input; selalu konversi ke 16 kHz mono sebelum VAD/STT.

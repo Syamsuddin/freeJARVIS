@@ -1,0 +1,11 @@
+# /etc/caddy/Caddyfile — ganti stt.example.id dengan domain VPS. TLS otomatis.
+stt.example.id {
+	request_body {
+		max_size 1MB
+	}
+	reverse_proxy 127.0.0.1:8080
+	log {
+		output stdout
+		format json
+	}
+}

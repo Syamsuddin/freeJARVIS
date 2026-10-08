@@ -1,0 +1,162 @@
+{
+  "versi": "1.1",
+  "genesis": "2026-10-08T07:09:46+00:00",
+  "perintah": {
+    "test": "(cd jarvisd && uv run pytest -q) && (cd stt-server && uv run pytest -q -p no:warnings)",
+    "lint": "cd jarvisd && uv run ruff check . && uv run ruff format --check . && uv run mypy jarvisd",
+    "migrate": "cd jarvisd && uv run python -m jarvisd.store.migrate",
+    "run": "cd jarvisd && uv run python -m jarvisd",
+    "test_stt": "cd stt-server && uv run pytest -q"
+  },
+  "sesi": [
+    {
+      "mulai": "2026-10-08T07:09:46+00:00",
+      "selesai": null,
+      "step": 4,
+      "detik": 346,
+      "tok_est": 14419
+    }
+  ],
+  "step_berjalan": null,
+  "blueprint": {
+    "sidik_awal": "e5a4c4b56dd15a15",
+    "sidik": "e5a4c4b56dd15a15",
+    "dokumen": 28,
+    "disegel": "2026-10-08T07:09:46+00:00"
+  },
+  "riwayat_fitur": [
+    {
+      "fitur": "G0-verifikasi",
+      "rute": "Fitur baru (vertical slice)",
+      "mulai": "2026-10-08T07:10:38+00:00",
+      "rencana": [
+        "jarvisd/pyproject.toml",
+        "jarvisd/uv.lock",
+        "jarvisd/.env.example",
+        "jarvisd/jarvisd/__init__.py",
+        "jarvisd/jarvisd/config.py",
+        "jarvisd/jarvisd/diag.py",
+        "jarvisd/jarvisd/engine/__init__.py",
+        "jarvisd/jarvisd/engine/sdk_client.py",
+        "jarvisd/tests/__init__.py",
+        "jarvisd/tests/test_diag.py",
+        "jarvisd/tests/engine/__init__.py",
+        "jarvisd/tests/engine/test_sdk_client.py",
+        "stt-server/pyproject.toml",
+        "stt-server/uv.lock",
+        "stt-server/.env.example",
+        "stt-server/stt_server/__init__.py",
+        "stt-server/stt_server/main.py",
+        "stt-server/stt_server/transcriber.py",
+        "stt-server/stt_server/auth.py",
+        "stt-server/stt_server/bench.py",
+        "stt-server/tests/__init__.py",
+        "stt-server/tests/conftest.py",
+        "stt-server/tests/test_main.py",
+        "stt-server/tests/test_bench.py",
+        "stt-server/tests/fixtures/README.md",
+        "stt-server/stt-server.service",
+        "stt-server/Caddyfile",
+        "stt-server/deploy.sh",
+        "docs/16_DEBUGGING_GUIDE.md",
+        "docs/_MANIFEST.json"
+      ],
+      "total_step": 0,
+      "step": [
+        {
+          "no": 1,
+          "nama": "Step 1-2 skema/model: dilewati (G0 tanpa DB)",
+          "mulai": "2026-10-08T07:10:38+00:00",
+          "selesai": "2026-10-08T07:10:49+00:00",
+          "detik": 11,
+          "tok_est": 1767,
+          "muat": [
+            "docs/23_ACCEPTANCE_CRITERIA.md"
+          ]
+        },
+        {
+          "no": 2,
+          "nama": "Step 3 logika: jarvisd diag + sdk_client",
+          "mulai": "2026-10-08T07:10:49+00:00",
+          "selesai": "2026-10-08T07:15:43+00:00",
+          "detik": 294,
+          "tok_est": 5833,
+          "muat": [
+            "jarvisd/jarvisd/diag.py",
+            "jarvisd/jarvisd/engine/sdk_client.py",
+            "stt-server/stt_server/main.py",
+            "stt-server/stt_server/transcriber.py",
+            "stt-server/stt_server/bench.py",
+            "stt-server/stt_server/auth.py"
+          ]
+        },
+        {
+          "no": 3,
+          "nama": "Step 4-6 endpoint stt + tes (UI dilewati: G0 tanpa UI)",
+          "mulai": "2026-10-08T07:15:47+00:00",
+          "selesai": "2026-10-08T07:15:47+00:00",
+          "detik": 1,
+          "tok_est": 3454,
+          "muat": [
+            "jarvisd/tests/test_diag.py",
+            "jarvisd/tests/engine/test_sdk_client.py",
+            "stt-server/tests/test_main.py",
+            "stt-server/tests/test_bench.py",
+            "stt-server/tests/conftest.py"
+          ]
+        },
+        {
+          "no": 4,
+          "nama": "Step 7 gerbang",
+          "mulai": "2026-10-08T07:15:47+00:00",
+          "selesai": "2026-10-08T07:16:27+00:00",
+          "detik": 40,
+          "tok_est": 3365,
+          "muat": [
+            "docs/03_ROADMAP.md",
+            "docs/16_DEBUGGING_GUIDE.md",
+            "docs/21_SECURITY_RULES.md",
+            "docs/27_API_CONTRACT.md"
+          ]
+        }
+      ],
+      "detik": 346,
+      "tok_est": 14419,
+      "deviasi": [
+        ".gitignore — abaikan sampel WAV pribadi",
+        "docs/21,27,03,23 — fakta berubah oleh temuan G0 (batas 1 MB, scrub os.environ, status G0)"
+      ],
+      "warn_dilewati": [
+        "S1: G0 baru 1/4 cek lulus; 3 cek butuh laptop Mac & VPS, blok G0 di 23 TIDAK diarsipkan",
+        "S7: dokumen di luar rencana, lihat deviasi"
+      ],
+      "asumsi": [
+        "Metode auth 'claude.ai' dan 'oauth_token' = langganan; nilai lain gagal",
+        "Sampel WAV bench direkam pengguna, tak di-commit"
+      ],
+      "dokumen_diperbarui": [
+        "docs/16_DEBUGGING_GUIDE.md (jebakan env & CLI bawaan & spool)",
+        "docs/21_SECURITY_RULES.md (1 MB, scrub os.environ)",
+        "docs/27_API_CONTRACT.md (411)",
+        "docs/23 & 03 (status G0)"
+      ],
+      "landmine_tersentuh": [
+        "SDK menimpakan options.env di atas os.environ",
+        "SDK memakai CLI bawaan _bundled/claude",
+        "Starlette spool > 1 MiB ke disk"
+      ],
+      "ditunda": [
+        "diag sdk, bench STT, suara id-ID — dijalankan pengguna di laptop/VPS",
+        "Kredit API bulanan: sumber data belum diketahui"
+      ],
+      "selesai": "2026-10-08T07:16:27+00:00"
+    }
+  ],
+  "akumulasi": {
+    "detik": 346,
+    "tok_est": 14419,
+    "tok_terukur": 0,
+    "step": 4,
+    "fitur": 1
+  }
+}

@@ -24,6 +24,16 @@
       "chars": 27260,
       "cpt": 3.5,
       "est_tokens": 7789
+    },
+    {
+      "ts": "2026-10-08T07:25:12+00:00",
+      "type": "task",
+      "task": "F07-proyek-sesi",
+      "route": "Fitur baru (vertical slice)",
+      "files": 8,
+      "chars": 26972,
+      "cpt": 3.5,
+      "est_tokens": 7706
     }
   ],
   "measured_sessions": {}

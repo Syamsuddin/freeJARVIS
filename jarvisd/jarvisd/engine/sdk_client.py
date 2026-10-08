@@ -11,7 +11,7 @@ import os
 from collections.abc import MutableMapping
 from pathlib import Path
 
-from claude_agent_sdk import CanUseTool, ClaudeAgentOptions
+from claude_agent_sdk import CanUseTool, ClaudeAgentOptions, ClaudeSDKClient
 from claude_agent_sdk.types import SystemPromptPreset
 
 # Membuat SDK menagih API key, bukan langganan Max (docs/20 #1).
@@ -62,3 +62,8 @@ def build_options(
         system_prompt=system_prompt,
         max_turns=max_turns,
     )
+
+
+def create_client(options: ClaudeAgentOptions) -> ClaudeSDKClient:
+    """Satu-satunya tempat `ClaudeSDKClient` dibuat; opsi wajib lewat `build_options`."""
+    return ClaudeSDKClient(options=options)

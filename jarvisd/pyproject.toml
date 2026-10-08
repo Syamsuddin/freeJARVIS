@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Daemon logika freeJARVIS: percakapan suara untuk Claude Code lewat Agent SDK"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "aiosqlite>=0.20",
     "claude-agent-sdk>=0.2.164",
 ]
 

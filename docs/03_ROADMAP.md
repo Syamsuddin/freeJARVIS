@@ -3,7 +3,7 @@ Fase = vertical slice yang bisa didemokan. Gerbang = syarat masuk tahap berikut,
 
 | Tahap | Tujuan demoable | Fitur | Durasi target |
 |---|---|---|---|
-| 0 — Inti tanpa UI | `jarvisd` jalan dari terminal: PTT keyboard → STT VPS → Agent SDK → TTS `say`/stub → jawaban dua kalimat; batal & resume via perintah | F02, F04 (lapis 1+3), F06, F07, F13; `stt-server` terpasang | 1–2 minggu |
+| 0 — Inti tanpa UI · status: F07 selesai; F02, F04, F06, F13 belum | `jarvisd` jalan dari terminal: PTT keyboard → STT VPS → Agent SDK → TTS `say`/stub → jawaban dua kalimat; batal & resume via perintah | F02, F04 (lapis 1+3), F06, F07, F13; `stt-server` terpasang | 1–2 minggu |
 | **G0** · status: 1/4 cek lulus (`diag ask`); `diag sdk`, STT VPS, suara id-ID menunggu dijalankan di laptop/VPS | 3 verifikasi [TERBUKA] terjawab: `AskUserQuestion` lewat `can_use_tool`; STT VPS ≥ 1× realtime (atau turun ke `medium`); suara id-ID layak. Percakapan terasa enak menurut pengguna | — | — |
 | 1 — App + full-duplex | `FreeJarvis.app` dua panel; mic aktif saat TTS; barge-in VAD lokal; Viewer 4 tab; persetujuan suara 4 tingkat; jatah | F01, F03, F05, F08–F12, narator F10 | 3–4 minggu |
 | **G1 = MVP selesai** | Metrik docs/00_EXECUTIVE_SUMMARY.md terukur + skenario lintas tahap AC-90 lolos | — | — |

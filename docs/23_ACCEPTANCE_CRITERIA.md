@@ -47,14 +47,6 @@ cd jarvisd && uv run python -m jarvisd.bench latency --runs 50
 ```
 Lulus: tes passed; bench `barge_in_p95_ms < 300`.
 
-## F07 — Proyek & sesi
-- Given proyek "sipadi" punya `last_session_id`, When "buka proyek sipadi", Then `ClaudeSDKClient` dibuat dengan `cwd`=path dan `resume`=id sesi.
-- Given nama tak cocok, Then kandidat tampil di Viewer, tak ada `cwd` berubah.
-- Given job `running`, When ganti proyek, Then Jarvis bertanya dulu.
-```bash
-cd jarvisd && uv run pytest -q tests/engine/test_sdk_client.py tests/conversation/test_project_switch.py
-```
-
 ## F08 — Persetujuan berjenjang
 - Tiap baris matriks docs/05 punya kasus tes klasifikasi; `Bash` tak dikenal → Frasa aksi.
 - Given Frasa aksi "izinkan push", When pengguna berkata "ya", Then ditolak sebagai jawaban dan Jarvis mengulang frasa.
@@ -70,6 +62,7 @@ cd jarvisd && uv run pytest -q tests/engine/test_permissions.py tests/conversati
 - Given "sudah sampai mana?", Then dijawab dari `tool_events` tanpa memanggil model; tanpa peristiwa → "Masih menunggu laporan."
 - Given perintah "tampilkan perubahan" / "baca bagian kedua" / "kosongkan layar", Then tab berganti / blok ke-2 dibacakan / `screen.clear`.
 - Given `text.input` dengan key yang sama dua kali, Then satu `query`.
+- Given `ProjectSwitcher.open` mengembalikan `candidates` (F07, terarsip), Then `screen.show{tab: answer, kind: markdown}` berisi daftar kandidat.
 ```bash
 cd jarvisd && uv run pytest -q tests/engine/test_hooks.py tests/conversation/test_status_query.py tests/ws/test_protocol.py
 xcodebuild -project app/FreeJarvis.xcodeproj -scheme FreeJarvis -destination 'platform=macOS' test

@@ -23,7 +23,7 @@ freeJARVIS/
 │   ├── jarvisd/
 │   │   ├── __main__.py · cli.py · config.py · bench.py · diag.py
 │   │   ├── ws/                   # server.py, messages.py (pydantic, cermin docs/27)
-│   │   ├── conversation/         # conversation_state.py, job_state.py, interruption.py, turn_detection.py, orchestrator.py
+│   │   ├── conversation/         # conversation_state.py, job_state.py, interruption.py, turn_detection.py, project_switch.py, orchestrator.py
 │   │   ├── engine/               # sdk_client.py, permissions.py (klasifikasi tingkat), hooks.py, narrator.py, model_policy.py, quota.py
 │   │   ├── voice/                # vad.py, stt_client.py (STTProvider + fallback), tts_router.py, splitter.py (lisan|layar), phrases.py
 │   │   ├── mcp/                  # tahap 2 — kosong di MVP

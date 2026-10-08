@@ -2,9 +2,15 @@ import os
 from pathlib import Path
 
 import pytest
+from claude_agent_sdk import ClaudeSDKClient
 
 from jarvisd.engine import sdk_client
-from jarvisd.engine.sdk_client import BillingEnvError, build_options, scrub_billing_env
+from jarvisd.engine.sdk_client import (
+    BillingEnvError,
+    build_options,
+    create_client,
+    scrub_billing_env,
+)
 
 
 def test_scrub_removes_api_key_and_keeps_others() -> None:
@@ -48,3 +54,10 @@ def test_build_options_appends_to_claude_code_preset(tmp_path: Path) -> None:
         "append": "Jawab dua kalimat.",
     }
     assert build_options(tmp_path).system_prompt is None
+
+
+def test_create_client_carries_cwd_and_resume(tmp_path: Path) -> None:
+    client = create_client(build_options(tmp_path, resume="sess-1"))
+    assert isinstance(client, ClaudeSDKClient)
+    assert client.options.cwd == tmp_path
+    assert client.options.resume == "sess-1"

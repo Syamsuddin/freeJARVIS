@@ -6,7 +6,8 @@
     "lint": "cd jarvisd && uv run ruff check . && uv run ruff format --check . && uv run mypy jarvisd",
     "migrate": "cd jarvisd && uv run python -m jarvisd.store.migrate",
     "run": "cd jarvisd && uv run python -m jarvisd",
-    "test_stt": "cd stt-server && uv run pytest -q"
+    "test_stt": "cd stt-server && uv run pytest -q",
+    "test_satu": "(cd jarvisd && uv run pytest -q tests/engine/test_sdk_client.py tests/conversation/test_project_switch.py)"
   },
   "sesi": [
     {
@@ -15,14 +16,29 @@
       "step": 4,
       "detik": 346,
       "tok_est": 14419
+    },
+    {
+      "mulai": "2026-10-08T07:19:44+00:00",
+      "selesai": null,
+      "step": 7,
+      "detik": 245,
+      "tok_est": 15147
     }
   ],
   "step_berjalan": null,
   "blueprint": {
     "sidik_awal": "e5a4c4b56dd15a15",
-    "sidik": "e5a4c4b56dd15a15",
+    "sidik": "8fcf5bb93327c06d",
     "dokumen": 28,
-    "disegel": "2026-10-08T07:09:46+00:00"
+    "disegel": "2026-10-08T07:19:44+00:00",
+    "sidik_sebelumnya": "e5a4c4b56dd15a15",
+    "riwayat": [
+      {
+        "dari": "e5a4c4b56dd15a15",
+        "ke": "8fcf5bb93327c06d",
+        "pada": "2026-10-08T07:19:44+00:00"
+      }
+    ]
   },
   "riwayat_fitur": [
     {
@@ -150,13 +166,161 @@
         "Kredit API bulanan: sumber data belum diketahui"
       ],
       "selesai": "2026-10-08T07:16:27+00:00"
+    },
+    {
+      "fitur": "F07-proyek-sesi",
+      "rute": "Fitur baru (vertical slice)",
+      "mulai": "2026-10-08T07:21:09+00:00",
+      "rencana": [
+        "jarvisd/pyproject.toml",
+        "jarvisd/uv.lock",
+        "jarvisd/jarvisd/store/__init__.py",
+        "jarvisd/jarvisd/store/db.py",
+        "jarvisd/jarvisd/store/migrate.py",
+        "jarvisd/jarvisd/store/repositories.py",
+        "jarvisd/jarvisd/store/migrations/001_init.sql",
+        "jarvisd/jarvisd/engine/sdk_client.py",
+        "jarvisd/jarvisd/conversation/__init__.py",
+        "jarvisd/jarvisd/conversation/project_switch.py",
+        "jarvisd/jarvisd/voice/__init__.py",
+        "jarvisd/jarvisd/voice/phrases.py",
+        "jarvisd/tests/store/__init__.py",
+        "jarvisd/tests/store/test_migrate.py",
+        "jarvisd/tests/store/test_repositories.py",
+        "jarvisd/tests/conversation/__init__.py",
+        "jarvisd/tests/conversation/test_project_switch.py",
+        "jarvisd/tests/engine/test_sdk_client.py",
+        "docs/12_PROJECT_STRUCTURE.md",
+        "docs/03_ROADMAP.md",
+        "docs/23_ACCEPTANCE_CRITERIA.md",
+        "docs/_archive/23-F07.md",
+        "docs/_MANIFEST.json",
+        "docs/_CODING_LEDGER.json",
+        "docs/_TOKEN_LEDGER.json"
+      ],
+      "total_step": 0,
+      "step": [
+        {
+          "no": 1,
+          "nama": "Step 1 skema: 001_init.sql + migrate",
+          "mulai": "2026-10-08T07:21:09+00:00",
+          "selesai": "2026-10-08T07:21:47+00:00",
+          "detik": 38,
+          "tok_est": 3191,
+          "muat": [
+            "docs/07_DATA_MODEL.md",
+            "docs/12_PROJECT_STRUCTURE.md",
+            "docs/22_CHANGE_POLICY.md",
+            "docs/13_TESTING.md"
+          ]
+        },
+        {
+          "no": 2,
+          "nama": "Step 2 akses data: repositories (projects, sessions)",
+          "mulai": "2026-10-08T07:21:47+00:00",
+          "selesai": "2026-10-08T07:22:14+00:00",
+          "detik": 27,
+          "tok_est": 1756,
+          "muat": [
+            "jarvisd/jarvisd/store/repositories.py",
+            "jarvisd/tests/store/test_repositories.py"
+          ]
+        },
+        {
+          "no": 3,
+          "nama": "Step 3 logika: project_switch + phrases + sdk_client",
+          "mulai": "2026-10-08T07:22:14+00:00",
+          "selesai": "2026-10-08T07:23:10+00:00",
+          "detik": 56,
+          "tok_est": 5432,
+          "muat": [
+            "docs/06_BUSINESS_PROCESS.md",
+            "docs/27_API_CONTRACT.md",
+            "docs/14_ERROR_HANDLING.md",
+            "jarvisd/jarvisd/conversation/project_switch.py",
+            "jarvisd/jarvisd/voice/phrases.py",
+            "jarvisd/jarvisd/engine/sdk_client.py"
+          ]
+        },
+        {
+          "no": 4,
+          "nama": "Step 4 endpoint/protokol: dilewati",
+          "mulai": "2026-10-08T07:23:10+00:00",
+          "selesai": "2026-10-08T07:23:10+00:00",
+          "detik": 1,
+          "tok_est": 0,
+          "muat": []
+        },
+        {
+          "no": 5,
+          "nama": "Step 5 UI: dilewati",
+          "mulai": "2026-10-08T07:23:10+00:00",
+          "selesai": "2026-10-08T07:23:10+00:00",
+          "detik": 1,
+          "tok_est": 0,
+          "muat": []
+        },
+        {
+          "no": 6,
+          "nama": "Step 6 tes: project_switch + sdk_client",
+          "mulai": "2026-10-08T07:23:10+00:00",
+          "selesai": "2026-10-08T07:24:11+00:00",
+          "detik": 61,
+          "tok_est": 2256,
+          "muat": [
+            "jarvisd/tests/conversation/test_project_switch.py",
+            "jarvisd/tests/engine/test_sdk_client.py"
+          ]
+        },
+        {
+          "no": 7,
+          "nama": "Step 7 gerbang fitur",
+          "mulai": "2026-10-08T07:24:11+00:00",
+          "selesai": "2026-10-08T07:25:12+00:00",
+          "detik": 61,
+          "tok_est": 2512,
+          "muat": [
+            "docs/23_ACCEPTANCE_CRITERIA.md",
+            "docs/03_ROADMAP.md",
+            "docs/_archive/23-F07.md"
+          ]
+        }
+      ],
+      "detik": 245,
+      "tok_est": 15147,
+      "deviasi": [
+        "docs/12_PROJECT_STRUCTURE.md — tambah conversation/project_switch.py (nama tes 23 menyiratkan modul sendiri)",
+        "voice/phrases.py: 'sesi terakhir dilanjutkan' bukan 'sesi kemarin' (AC-00 #1) karena sesi bisa lebih lama dari kemarin — perlu keputusan pengguna",
+        "Branch kerja claude/dreamy-brahmagupta-axa119 (aturan sesi), bukan feat/… docs/22; di-fast-forward dari claude/festive-gauss-81bkni yang belum di-merge ke main"
+      ],
+      "warn_dilewati": [
+        "S1: butir 'kandidat tampil di Viewer' baru sampai OpenResult.candidates; render screen.show dipindah ke blok F09/F10/F12 di 23",
+        "S6: diperiksa manual"
+      ],
+      "asumsi": [
+        "Cocok nama: persis (NOCASE) setelah buang tanda baca tepi; kandidat via difflib cutoff 0.5 + substring, maks 5",
+        "Klien lama di-disconnect sebelum klien baru connect (satu klien aktif, docs/02)",
+        "Migrasi 001 = buat skema baru di DB kosong, bukan destruktif; tidak dijalankan ke jarvis.db nyata"
+      ],
+      "dokumen_diperbarui": [
+        "docs/12_PROJECT_STRUCTURE.md (project_switch.py)",
+        "docs/23 (F07 diarsip, butir kandidat ke F09)",
+        "docs/03 (status tahap 0)"
+      ],
+      "ditunda": [
+        "Render kandidat & project.summary ke Viewer — menunggu lapis ws (F09)",
+        "projects.vocabulary untuk prompt STT — F02",
+        "Pendaftaran proyek dari CLI --project — slice cli tahap 0",
+        "Pembatalan job sebelum ganti proyek — F06"
+      ],
+      "selesai": "2026-10-08T07:25:12+00:00"
     }
   ],
   "akumulasi": {
-    "detik": 346,
-    "tok_est": 14419,
+    "detik": 591,
+    "tok_est": 29566,
     "tok_terukur": 0,
-    "step": 4,
-    "fitur": 1
+    "step": 11,
+    "fitur": 2
   }
 }
